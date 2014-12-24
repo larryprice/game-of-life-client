@@ -17,6 +17,21 @@ function Square(row, column) {
 };
 
 $(function () {
+  setupCanvas();
+
+  $("#show-lines").click();
+  $("input[name='lines-on-off']").on("change", toggleLines);
+
+  $("#medium-cells").click();
+  $("input[name='cell-size']").on("change", updateCellSize);
+  $("#clear-board").on("click", resetBoard);
+
+  $("#step-forward").click();
+
+  drawLines();
+});
+
+function setupCanvas() {
   prisonCanvas = $("#game");
   prisonCanvas[0].width = prisonWidth + 1;
   prisonCanvas[0].height = prisonHeight + 1;
@@ -27,19 +42,37 @@ $(function () {
 
   updateCanvasPosition();
   $(window).on("resize", updateCanvasPosition);
+};
 
-  $("#lines-on-off")
-    .prop("checked", "checked")
-    .bootstrapSwitch()
-    .on("switchChange.bootstrapSwitch", toggleLines);
+function updateCellSize(e) {
+  switch (e.target.id) {
+  case "small-cells":
+    squareWidth = 8;
+    squareHeight = 8;
+    break;
+  case "large-cells":
+    squareWidth = 32;
+    squareHeight = 32;
+    break;
+  case "medium-cells":
+  default:
+    squareWidth = 16;
+    squareHeight = 16;
+    break;
+  }
 
-  drawLines();
-});
+  redraw();
+};
 
-function toggleLines(e, s) {
-  shouldDrawLines = s;
+function resetBoard() {
+  painted.length = 0;
   redraw();
 }
+
+function toggleLines(e) {
+  shouldDrawLines = e.target.id === "show-lines";
+  redraw();
+};
 
 function updateCanvasPosition() {
   var x = 0;
