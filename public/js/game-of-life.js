@@ -8,6 +8,7 @@ var prisonContext;
 
 var firstSquare;
 var painted = [];
+var canvasPosition = {};
 
 function Square(row, column) {
   this.row = row;
@@ -23,8 +24,29 @@ $(function () {
   prisonCanvas.on("mouseout", prisonMouseUp);
   prisonContext = prisonCanvas[0].getContext("2d");
 
+  updateCanvasPosition();
+  $(window).on("resize", updateCanvasPosition);
+
   drawLines();
 });
+
+function updateCanvasPosition() {
+  var x = 0;
+  var y = 0;
+  var ele = prisonCanvas[0];
+  while (true) {
+    x += ele.offsetLeft;
+    y += ele.offsetTop;
+    if (ele.offsetParent === null) {
+      break;
+    }
+    ele = ele.offsetParent;
+  }
+  canvasPosition = {
+    x: x,
+    y: y
+  };
+}
 
 function drawLines() {
   drawVerticalLines();
@@ -45,12 +67,6 @@ function drawHorizontalLines() {
     prisonContext.moveTo(0, 0.5 + y);
     prisonContext.lineTo(prisonWidth, 0.5 + y);
   }
-};
-
-function paintSquare(square, isTemporary) {
-  prisonContext.beginPath();
-  prisonContext.fillStyle = isTemporary ? "#33FF00" : "#000";
-  prisonContext.fillRect(getX(square), getY(square), squareWidth, squareHeight);
 };
 
 function prisonMouseDown(e) {
@@ -98,6 +114,12 @@ function drawSquares() {
   }
 };
 
+function paintSquare(square, isTemporary) {
+  prisonContext.beginPath();
+  prisonContext.fillStyle = isTemporary ? "#33FF00" : "#000";
+  prisonContext.fillRect(getX(square), getY(square), squareWidth, squareHeight);
+};
+
 function getY(square) {
   return square.row * squareWidth;
 };
@@ -113,12 +135,13 @@ function getSquare(e) {
     x = e.pageX;
     y = e.pageY;
   } else {
-    x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-    y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+    x = e.clientX;
+    y = e.clientY;
   }
 
-  x -= prisonCanvas[0].offsetLeft;
-  y -= prisonCanvas[0].offsetTop;
+  x -= canvasPosition.x;
+  y -= canvasPosition.y;
+
   x = Math.min(x, prisonWidth);
   y = Math.min(y, prisonHeight);
   return new Square(Math.floor(y / squareHeight), Math.floor(x / squareWidth));
