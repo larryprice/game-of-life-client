@@ -1,5 +1,5 @@
-var squareWidth = 32;
-var squareHeight = 32;
+var squareWidth = 16;
+var squareHeight = 16;
 var prisonWidth = 512;
 var prisonHeight = 512;
 
@@ -9,6 +9,7 @@ var prisonContext;
 var firstSquare;
 var painted = [];
 var canvasPosition = {};
+var shouldDrawLines = true;
 
 function Square(row, column) {
   this.row = row;
@@ -27,8 +28,18 @@ $(function () {
   updateCanvasPosition();
   $(window).on("resize", updateCanvasPosition);
 
+  $("#lines-on-off")
+    .prop("checked", "checked")
+    .bootstrapSwitch()
+    .on("switchChange.bootstrapSwitch", toggleLines);
+
   drawLines();
 });
+
+function toggleLines(e, s) {
+  shouldDrawLines = s;
+  redraw();
+}
 
 function updateCanvasPosition() {
   var x = 0;
@@ -49,23 +60,33 @@ function updateCanvasPosition() {
 }
 
 function drawLines() {
-  drawVerticalLines();
-  drawHorizontalLines();
+  if (shouldDrawLines) {
+    drawVerticalLines();
+    drawHorizontalLines();
+  } else {
+    drawLine(0.5, 0, 0.5, prisonHeight);
+    drawLine(prisonWidth - 0.5, 0, prisonWidth - 0.5, prisonHeight);
+    drawLine(0, 0.5, prisonWidth, 0.5);
+    drawLine(0, prisonHeight - 0.5, prisonWidth, prisonHeight - 0.5);
+  }
   prisonContext.strokeStyle = "#ccc";
   prisonContext.stroke();
 };
 
+function drawLine(startX, startY, endX, endY) {
+  prisonContext.moveTo(startX, startY);
+  prisonContext.lineTo(endX, endY);
+};
+
 function drawVerticalLines() {
   for (var x = 0; x <= prisonWidth; x += squareWidth) {
-    prisonContext.moveTo(0.5 + x, 0);
-    prisonContext.lineTo(0.5 + x, prisonHeight);
+    drawLine(0.5 + x, 0, 0.5 + x, prisonHeight);
   }
 };
 
 function drawHorizontalLines() {
   for (var y = 0; y <= prisonHeight; y += squareHeight) {
-    prisonContext.moveTo(0, 0.5 + y);
-    prisonContext.lineTo(prisonWidth, 0.5 + y);
+    drawLine(0, 0.5 + y, prisonWidth, 0.5 + y);
   }
 };
 
