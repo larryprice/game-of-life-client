@@ -28,8 +28,20 @@ $(function () {
 
   $("#step-forward").click();
 
+  $("#step-size").on("change", checkStepSize);
+  $("#gol-url").val(document.URL + "step");
+
+  $("#step-board").on("click", stepOne);
+  $("#play-board").on("click", stepOne);
+
   drawLines();
 });
+
+function checkStepSize() {
+  if ($("#step-size").val() < 1) {
+    $("#step-size").val(1);
+  }
+};
 
 function setupCanvas() {
   prisonCanvas = $("#game");
@@ -67,7 +79,7 @@ function updateCellSize(e) {
 function resetBoard() {
   painted.length = 0;
   redraw();
-}
+};
 
 function toggleLines(e) {
   shouldDrawLines = e.target.id === "show-lines";
@@ -90,7 +102,26 @@ function updateCanvasPosition() {
     x: x,
     y: y
   };
-}
+};
+
+function stepOne() {
+  $.ajax({
+    url: $("#gol-url").val(),
+    data: {
+      steps: $("#step-size").val(),
+      direction: $("#step-forward").prop("checked") ? 1 : -1,
+      cells: JSON.stringify(painted)
+    },
+    success: function (data) {
+      console.log(data)
+    },
+    error: function (xhr) {
+      console.log(xhr);
+    }
+  });
+
+  return false;
+};
 
 function drawLines() {
   if (shouldDrawLines) {
