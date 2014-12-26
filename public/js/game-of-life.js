@@ -113,7 +113,8 @@ function stepOne() {
       cells: JSON.stringify(painted)
     },
     success: function (data) {
-      console.log(data)
+      painted = data;
+      redraw();
     },
     error: function (xhr) {
       console.log(xhr);
