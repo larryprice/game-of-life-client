@@ -186,7 +186,6 @@ function clearSquare(square) {
   for (var i = painted.length - 1; i >= 0; --i) {
     if (painted[i].row === square.row && painted[i].column == square.column) {
       painted.splice(i, 1);
-      return;
     }
   }
 };
