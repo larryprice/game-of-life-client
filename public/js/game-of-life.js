@@ -79,6 +79,8 @@ function updateCellSize(e) {
 function resetBoard() {
   painted.length = 0;
   redraw();
+
+  return false;
 };
 
 function toggleLines(e) {
@@ -107,14 +109,15 @@ function updateCanvasPosition() {
 function stepOne() {
   $.ajax({
     url: $("#gol-url").val(),
+    method: "get",
     data: {
       steps: $("#step-size").val(),
       direction: $("#step-forward").prop("checked") ? 1 : -1,
       cells: JSON.stringify(painted)
     },
     success: function (data) {
-      painted = data;
-      redraw();
+      // painted = data;
+      // redraw();
     },
     error: function (xhr) {
       console.log(xhr);
