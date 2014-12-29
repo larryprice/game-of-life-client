@@ -1,0 +1,5 @@
+{
+	"ImportPath": "github.com/game-of-life-client",
+	"GoVersion": "go1.4",
+	"Deps": []
+}
