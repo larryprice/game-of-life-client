@@ -11,6 +11,7 @@ var painted = [];
 var canvasPosition = {};
 var shouldDrawLines = true;
 var intervalId = -1;
+var playSpeed = 500;
 
 function Square(row, column) {
   this.row = row;
@@ -25,15 +26,16 @@ $(function () {
 
   $("#medium-cells").click();
   $("input[name='cell-size']").on("change", updateCellSize);
-  $("#clear-board").on("click", resetBoard);
-
-  $("#step-forward").click();
 
   $("#step-size").on("change", checkStepSize);
+  $("input[name='play-speed']").on("change", updatePlaySpeed);
+
+  $("#play-medium").click();
 
   $("#step-board").on("click", stepOne);
   $("#play-board").on("click", playGame);
   $("#pause-board").on("click", pauseGame);
+  $("#clear-board").on("click", resetBoard);
 
   drawLines();
 });
@@ -41,7 +43,7 @@ $(function () {
 function playGame() {
   $("#play-board").hide();
   $("#pause-board").show();
-  intervalId = setInterval(stepOne, 500);
+  resetInterval();
   return false;
 };
 
@@ -57,6 +59,10 @@ function checkStepSize() {
   if ($("#step-size").val() < 1) {
     $("#step-size").val(1);
   }
+
+  if (intervalId != -1) {
+    resetInterval();
+  }
 };
 
 function setupCanvas() {
@@ -71,6 +77,11 @@ function setupCanvas() {
   updateCanvasPosition();
   $(window).on("resize", updateCanvasPosition);
 };
+
+function resetInterval() {
+  clearInterval(intervalId);
+  intervalId = setInterval(stepOne, playSpeed);
+}
 
 function updateCellSize(e) {
   switch (e.target.id) {
@@ -91,6 +102,25 @@ function updateCellSize(e) {
 
   redraw();
 };
+
+function updatePlaySpeed(e) {
+  switch (e.target.id) {
+  case "play-slow":
+    playSpeed = 1000;
+    break;
+  case "play-fast":
+    playSpeed = 100;
+    break;
+  case "play-medium":
+  default:
+    playSpeed = 500;
+    break;
+  }
+
+  if (intervalId != -1) {
+    resetInterval();
+  }
+}
 
 function resetBoard() {
   painted.length = 0;
@@ -128,7 +158,6 @@ function stepOne() {
     method: "get",
     data: {
       steps: $("#step-size").val(),
-      direction: $("#step-forward").prop("checked") ? 1 : -1,
       cells: JSON.stringify(painted)
     },
     success: function (data) {
