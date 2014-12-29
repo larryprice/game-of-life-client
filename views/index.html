@@ -5,17 +5,23 @@
   <meta name="author" content="Larry Price <larry.price.dev@gmail.com>">
   <title>Game of Life</title>
 
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link href="//fonts.googleapis.com/css?family=Hind" rel="stylesheet" type="text/css">
+  <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/css/styles.css">
 
-  <script src="https://code.jquery.com/jquery-2.1.3.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-2.1.3.min.js"></script>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
   <script src="/js/game-of-life.js"></script>
+  <script src="/js/cookie.min.js"></script>
 </head>
 <body>
   <div class="container">
     <div class="row">
-      <div class="col-xs-12 text-center" style="margin-bottom:2em;">
-        <h1>Conway's Game of Life</h1>
+      <div class="col-xs-12 text-center" id="page-header">
+        <span class="h1"><strong>Build-Your-Own</strong> Conway's Game of Life</span>
+        <a data-toggle="modal" data-target="#info-modal" href="javascript:void(0)">
+          <i id="info-sign" class="glyphicon glyphicon-info-sign"></i>
+        </a>
       </div>
     </div>
     <div class="row">
@@ -107,6 +113,184 @@
               </div>
             </div>
           </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal definition -->
+  <div class="modal fade" id="info-modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Hey there. Welcome to BYO Game of Life.</h4>
+        </div>
+        <div class="modal-body">
+          <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="welcome-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#welcome-body" aria-expanded="true" aria-controls="welcome-body">
+                    What is this place?
+                  </a>
+                </h4>
+              </div>
+              <div id="welcome-body" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="welcome-heading">
+                <div class="panel-body">
+                  This page is a frontend client for <strong>your</strong> <em>Conway's Game of Life</em> implementation. All you have to do is create an application with an accessible HTTP endpoint which manipulates the game data. This way, you're free to create your backend implementation without worrying about the frontend!
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="description-heading">
+                <h4 class="panel-title">
+                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#description-body" aria-expanded="false" aria-controls="description-body">
+                    What is <em>Conway's Game of Life</em>?
+                  </a>
+                </h4>
+              </div>
+              <div id="description-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="description-heading">
+                <div class="panel-body">
+                  From the <a class="btn-link" href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">Wikipedia article</a>:
+                  <blockquote>
+                    The Game of Life, also known simply as Life, is a cellular automaton devised by the British mathematician John Horton Conway in 1970. The "game" is a zero-player game, meaning that its evolution is determined by its initial state, requiring no further input. One interacts with the Game of Life by creating an initial configuration and observing how it evolves or, for advanced players, by creating patterns with particular properties.
+                  </blockquote>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="rules-heading">
+                <h4 class="panel-title">
+                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#rules-body" aria-expanded="false" aria-controls="rules-body">
+                    What are the rules?
+                  </a>
+                </h4>
+              </div>
+              <div id="rules-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="rules-heading">
+                <div class="panel-body">
+                <ul>
+                  <li>Any live cell with fewer than two live neighbours dies, as if caused by under-population.</li>
+                  <li>Any live cell with two or three live neighbours lives on to the next generation.</li>
+                  <li>Any live cell with more than three live neighbours dies, as if by overcrowding.</li>
+                  <li>Any dead cell with exactly three live neighbours becomes a live cell, as if by reproduction.</li>
+                </ul>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="how-to-play-heading">
+                <h4 class="panel-title">
+                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#how-to-play-body" aria-expanded="false" aria-controls="how-to-play-body">
+                    How do I play?
+                  </a>
+                </h4>
+              </div>
+              <div id="how-to-play-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="how-to-play-heading">
+                <div class="panel-body">
+                  <ul>
+                    <li>Create life by selecting cells in the grid. Live cells are indicated in black, dead cells are indicated in white.</li>
+                    <li>Select the number of generations to advance by changing the <em>Step Size</em> field.</li>
+                    <li>Change the size of the cells with the <em>Cell Size</em> toggle.</li>
+                    <li>Change the pace of the game with the <em>Play Speed</em> toggle.</li>
+                    <li>Enter the URL of your implementation in the <em>URL</em> field. You can even use <code>localhost</code> to test your local implementation!</li>
+                    <li>Click <em>Step</em> to send/receive data from your implementation once.</li>
+                    <li>Click <em>Play</em> to continually send/receive data from your implementation. Click <em>Pause</em> to stop sending data.</li>
+                    <li>Click <em>Clear Board</em> to kill all live cells on the board.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="api-heading">
+                <h4 class="panel-title">
+                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#api-body" aria-expanded="false" aria-controls="api-body">
+                    What parameters are sent to my implementation?
+                  </a>
+                </h4>
+              </div>
+              <div id="api-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="api-heading">
+                <div class="panel-body">
+                  Enter your endpoint into the <em>URL</em> field. I'll be making a <code>GET</code> request to the exact endpoint you enter with the following parameters as JSON:
+                  <table border="1" id="api-table">
+                    <thead>
+                      <tr>
+                        <th width="20%">Name</th>
+                        <th width="20%">Type</th>
+                        <th width="60%">Description</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>steps</td>
+                        <td>integer</td>
+                        <td>The number of generations to iterate at a time.</td>
+                      </tr>
+                      <tr>
+                        <td>cells</td>
+                        <td>Array</td>
+                        <td>The live cells currently on the board. Each cell has two properties, <code>row</code> and <code>column</code> to signify the row and column numbers the cell occupies.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="contact-heading">
+                <h4 class="panel-title">
+                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#contact-body" aria-expanded="false" aria-controls="contact-body">
+                    Useful Links (bug reporting, existing implementations, etc.)
+                  </a>
+                </h4>
+              </div>
+              <div id="contact-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="contact-heading">
+                <div class="panel-body">
+                  <ul>
+                    <li>My Blog: <a href="https://larry-price.com">https://larry-price.com</a>
+                    <li>Code: <a href="https://github.com/larryprice/game-of-life-client">https://github.com/larryprice/game-of-life-client</a></li>
+                    <li>Bugs/Feature Requests: <a href="https://github.com/larryprice/game-of-life-client/issues">https://github.com/larryprice/game-of-life-client/issues</a></li>
+                    <li>Working Implementation (in Go): <a href="https://github.com/larryprice/game-of-life-impl">https://github.com/larryprice/game-of-life-impl</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading" role="tab" id="copyright-heading">
+                <h4 class="panel-title">
+                  <a class="collapsed" data-toggle="collapse" data-parent="#accordion" href="#copyright-body" aria-expanded="false" aria-controls="copyright-body">
+                    Copyright Information
+                  </a>
+                </h4>
+              </div>
+              <div id="copyright-body" class="panel-collapse collapse" role="tabpanel" aria-labelledby="copyright-heading">
+                <div class="panel-body">
+                  <p>The MIT License (MIT)</p>
+                  <p>Copyright (c) 2014 Larry Price &lt;<a href="mailto:larry@larry-price.com">larry@larry-price.com</a>&gt;</p>
+
+                  <p><small>Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</p></small>
+
+                  <p><small>The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.</p></small>
+
+                  <p><small>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p></small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="row">
+            <div class="col-xs-9">
+              <div class="checkbox pull-left">
+                <label>
+                  <input id="show-welcome-dialog" type="checkbox"> Show this dialog next time this page is loaded
+                </label>
+              </div>
+            </div>
+            <div class="col-xs-3">
+                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

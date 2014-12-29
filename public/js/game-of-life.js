@@ -38,7 +38,17 @@ $(function () {
   $("#clear-board").on("click", resetBoard);
 
   drawLines();
+
+  $("#show-welcome-dialog").on("change", setShowModalCookie);
+  if (cookie.get('dontShowModal') !== 'true') {
+    setShowModalCookie();
+    $("#info-modal").modal("show");
+  }
 });
+
+function setShowModalCookie() {
+  cookie.set('dontShowModal', !$("#show-welcome-dialog")[0].checked);
+}
 
 function playGame() {
   $("#play-board").hide();
