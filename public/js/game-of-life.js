@@ -10,6 +10,7 @@ var firstSquare;
 var painted = [];
 var canvasPosition = {};
 var shouldDrawLines = true;
+var intervalId = -1;
 
 function Square(row, column) {
   this.row = row;
@@ -29,13 +30,28 @@ $(function () {
   $("#step-forward").click();
 
   $("#step-size").on("change", checkStepSize);
-  $("#gol-url").val(document.URL + "step");
 
   $("#step-board").on("click", stepOne);
-  $("#play-board").on("click", stepOne);
+  $("#play-board").on("click", playGame);
+  $("#pause-board").on("click", pauseGame);
 
   drawLines();
 });
+
+function playGame() {
+  $("#play-board").hide();
+  $("#pause-board").show();
+  intervalId = setInterval(stepOne, 500);
+  return false;
+};
+
+function pauseGame() {
+  $("#pause-board").hide();
+  $("#play-board").show();
+  clearInterval(intervalId);
+  intervalId = -1;
+  return false;
+};
 
 function checkStepSize() {
   if ($("#step-size").val() < 1) {
@@ -116,8 +132,8 @@ function stepOne() {
       cells: JSON.stringify(painted)
     },
     success: function (data) {
-      // painted = data;
-      // redraw();
+      painted = JSON.parse(data);
+      redraw();
     },
     error: function (xhr) {
       console.log(xhr);
